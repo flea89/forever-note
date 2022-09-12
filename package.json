@@ -1,0 +1,19 @@
+{
+  "name": "w3up-vanillajs",
+  "version": "0.0.1",
+  "description": "A vanillajs demo that uses new w3up APIs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "w3up",
+    "web3.storage"
+  ],
+  "author": "Paolo Chillari",
+  "license": "ISC",
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.7.0",
+    "parcel": "^2.7.0"
+  }
+}
