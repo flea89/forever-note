@@ -1,20 +1,6 @@
-import { hydrateAuth } from "./auth";
-
-import { createClient } from "w3up-client";
-import {
-  ACCESS_DID,
-  ACCESS_URL,
-  SERVICE_URL,
-  W3_STORE_DID,
-} from "./w3up-settings";
-
-const client = createClient({
-  serviceDID: W3_STORE_DID,
-  serviceURL: SERVICE_URL,
-  accessDID: ACCESS_DID,
-  accessURL: ACCESS_URL,
-  settings: new Map(),
-});
+import { App } from "./app";
+import { RegisterForm } from "./registration";
+import { Router } from "./router";
 
 const SELECTOR = {
   authView: "#auth",
@@ -22,28 +8,38 @@ const SELECTOR = {
 
 console.log("Hello world");
 
-const authView$ = document.querySelector(SELECTOR.authView);
+// const authView$ = document.querySelector(SELECTOR.authView);
 
-if (!authView$) {
-  throw Error();
-}
+// if (!authView$) {
+//   throw Error();
+// }
 
-const showLogin = () => {
-  authView$.hidden = false;
-  dashboardView$.hidden = true;
-};
+// const showLogin = () => {
+//   authView$.hidden = false;
+//   dashboardView$.hidden = true;
+// };
 
-const showDashboard = () => {
-  authView$.hidden = true;
-  dashboardView$.hidden = false;
-};
+// const showDashboard = () => {
+//   authView$.hidden = true;
+//   dashboardView$.hidden = false;
+// };
 
-const loginStatusChangeHandler = (loggedIn, usermetadata) => {
-  if (loggedIn) {
-    showDashboard();
-  } else {
-    showLogin();
-  }
-};
+// const loginStatusChangeHandler = (loggedIn, usermetadata) => {
+//   if (loggedIn) {
+//     showDashboard();
+//   } else {
+//     showLogin();
+//   }
+// };
 
-hydrateAuth(authView$, client, loginStatusChangeHandler);
+// hydrateAuth(authView$, client, loginStatusChangeHandler);
+
+customElements.define("register-form", RegisterForm);
+customElements.define("app-router", Router);
+customElements.define("fn-app", App);
+
+// document
+//   .querySelector("register-form")
+//   ?.addEventListener("registered", (event) => {
+//     console.log(event);
+//   });

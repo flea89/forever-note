@@ -9,26 +9,37 @@
     <script type="module" src="./index.js"></script>
 </head>
 <body>
-    <div id="auth">
+  <fn-app>
+    <app-router current-route="loading">
+      <route id="registration">
         <h1>
-            Forever Note!
+          Forever Note!
         </h1>
         <p>
-            An interplanetary note taking app.
+          An interplanetary note taking app.
         </p>
         <p>
           Powered by w3up.
-      </p>
-        <form class="auth__form" action="">
-            <label> Email: <input name="email" required type="email"></label>
-            <div>
-                <button type="submit"> Sign in</button>
-            </div>
-        </form>
-    </div>
-
-    <section id="dashboard" hidden="true">
-      <h2> A dashboard</h2>
-    </section>
+        </p>
+        <register-form>
+          <form class="auth__form" action="">
+              <label> Email: <input name="email" required type="email"></label>
+              <div>
+                  <button type="submit"> Sign in</button>
+              </div>
+          </form>
+        </register-form>
+      </route>
+      <route id="dashboard">
+        <h2> A dashboard</h2>
+      </route>
+      <route id="loading">
+        <h2> I'm loading</h2>
+      </route>
+      <route id="error">
+        <h2> Oops! Something went wrong!</h2>
+      </route>
+    </router>
+  </fn-app>
 </body>
 </html>
