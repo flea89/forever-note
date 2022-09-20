@@ -1,6 +1,8 @@
 import { App } from "./app";
 import { RegisterForm } from "./registration";
 import { Router } from "./router";
+import { NoteEditor } from "./note-editor";
+import { NoteList } from "./note-list";
 
 const SELECTOR = {
   authView: "#auth",
@@ -37,6 +39,8 @@ console.log("Hello world");
 customElements.define("register-form", RegisterForm);
 customElements.define("app-router", Router);
 customElements.define("fn-app", App);
+customElements.define("note-editor", NoteEditor);
+customElements.define("note-list", NoteList);
 
 // document
 //   .querySelector("register-form")
