@@ -24,7 +24,6 @@ export class RegisterForm extends HTMLElement {
   }
 
   connectedCallback() {
-    console.log("hi", this.form$);
     if (!this.form$) {
       throw Error("Login Form expected");
     }
@@ -67,37 +66,3 @@ export class RegisterForm extends HTMLElement {
     }
   };
 }
-
-// /**
-//  *
-//  * @param {Element} authElement
-//  * @param {*} client
-//  * @param {function} loginStatusChangeHandler
-//  */
-// export const hydrateAuth = (authElement, client, loginStatusChangeHandler) => {
-//   const form$ = authElement.querySelector(SELECTORS.authForm);
-
-//   if (!form$) {
-//     throw Error("Login Form expected");
-//   }
-
-//   const submitHandler = async (e) => {
-//     e.preventDefault();
-//     const fd = new FormData(e.target);
-//     // log in a user by their email
-//     const email = /** @type {string} */ fd.get("email");
-
-//     if (email) {
-//       try {
-//         const successMessage = await registerIdentity(email);
-//         console.log("Success: ", successMessage);
-//       } catch (err) {
-//         console.error("Registraton failed:", err);
-//       }
-
-//       console.log(await client.list());
-//     }
-//   };
-
-//   form$.addEventListener("submit", submitHandler);
-// };
