@@ -2,17 +2,28 @@ import { registerIdentity } from "@w3ui/wallet-core";
 
 const SELECTORS = {
   authForm: ".auth__form",
+  confirmation: ".auth__confirmation",
+};
+
+export const EVENTS = {
+  registrationStart: "registration:start",
+  registrationSuccess: "registration:success",
 };
 
 export class RegisterForm extends HTMLElement {
   constructor() {
     super();
+    this.form$ = this.querySelector(SELECTORS.authForm);
+    this.confirmation$ = this.querySelector(SELECTORS.confirmation);
     this.submitHandler = this.submitHandler.bind(this);
-    console.log("constructor");
+  }
+
+  toggleConfirmation(show) {
+    this.form$.hidden = show;
+    this.confirmation$.hidden = !show;
   }
 
   connectedCallback() {
-    this.form$ = this.querySelector(SELECTORS.authForm);
     console.log("hi", this.form$);
     if (!this.form$) {
       throw Error("Login Form expected");
@@ -34,14 +45,21 @@ export class RegisterForm extends HTMLElement {
     let identity;
 
     if (email) {
+      const event = new CustomEvent(EVENTS.registrationStart, {
+        detail: {},
+      });
+      this.dispatchEvent(event);
+
       try {
+        this.toggleConfirmation(true);
         identity = await registerIdentity(email);
         status = "success";
       } catch (err) {
         status = "error";
         console.error("Registraton failed:", err);
       } finally {
-        const event = new CustomEvent("registered", {
+        this.toggleConfirmation(false);
+        const event = new CustomEvent(EVENTS.registrationSuccess, {
           detail: { identity, error },
         });
         this.dispatchEvent(event);

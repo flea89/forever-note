@@ -9,7 +9,7 @@
     <script type="module" src="./index.js"></script>
 </head>
 <body>
-  <fn-app>
+  <notes-app>
     <app-router current-route="loading">
       <route id="registration">
         <h1>
@@ -27,14 +27,27 @@
               <div>
                   <button type="submit"> Sign in</button>
               </div>
-          </form>
+            </form>
+            <div class="auth__confirmation" hidden>
+              Check your email to complete the registration.
+            </div>
         </register-form>
       </route>
       <route id="dashboard">
-        <h2>A dashboard</h2>
-        <h3>My files</h3>
-        <note-list></note-list>
-        <note-editor></note-editor>
+        <notes-dashboard>
+          <h2>A dashboard</h2>
+          <h3>My files</h3>
+          <note-editor>
+            <form class="note-editor__form" action="">
+              <textarea rows="10" cols="80">Hello</textarea>
+              <button type="submit">Publish</button>
+            </form>
+          </note-editor>
+          <note-list></note-list>
+        </notes-dashboard>
+      </route>
+      <route id="note-detail">
+        <note-detail cid=""></note-detail>
       </route>
       <route id="loading">
         <h2> I'm loading</h2>
@@ -43,6 +56,6 @@
         <h2> Oops! Something went wrong!</h2>
       </route>
     </router>
-  </fn-app>
+  </notes-app>
 </body>
 </html>

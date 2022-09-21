@@ -3,6 +3,7 @@ import {
   registerIdentity,
   storeIdentity,
 } from "@w3ui/wallet-core";
+import { EVENTS } from "./registration";
 
 const ROUTE_ATTRIBUTE = "current-route";
 
@@ -27,12 +28,13 @@ export class App extends HTMLElement {
       this.router$.setAttribute("current-route", currentRoute);
     });
 
-    this.registration$.addEventListener("registered", (event) => {
+    this.registration$.addEventListener(EVENTS.registrationSuccess, (event) => {
       const identity = /** @type {CustomEvent} */ event.detail.identity;
       const route = identity ? "dashboard" : "error";
       if (identity) {
         storeIdentity(identity);
       }
+      this.router$.setAttribute("current-route", route);
     });
   }
 
