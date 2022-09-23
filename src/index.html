@@ -11,7 +11,7 @@
 </head>
 <body class="sans-serif">
   <notes-app>
-    <app-router current-route="loading">
+    <view-router current-route="loading">
       <route id="registration">
         <h1>
           Forever Note!
@@ -37,15 +37,29 @@
       <route id="dashboard">
         <notes-dashboard class="flex">
           <div class="w-third br pa3 h-100 min-vh-100">
-            <h3 class="mt0">My notes</h3>
+            <h3 class="mt0">My notes</h3> <span><a href="#" class="add-new-note"> New note </a></span>
+            <hr/>
             <note-list></note-list>
           </div>
-          <note-editor class="w-two-thirds mh3 flex flex-column">
-            <form class="note-editor__form flex flex-column min-vh-100" action="">
-              <textarea rows="10" cols="80" class="h-100 mt3">Hello</textarea>
-              <button type="submit" class="pointer mv4 dim f6 br2 ba bw1 ph3 pv2 mb2 dib black bg-white">Publish</button>
-            </form>
-          </note-editor>
+          <view-router current-route="editor">
+            <route id="editor">
+              <note-editor class="w-two-thirds mh3 flex flex-column">
+                <form class="note-editor__form flex flex-column min-vh-100" action="">
+                  <textarea rows="10" cols="80" class="h-100">Hello</textarea>
+                  <button type="submit" class="pointer mv4 dim f6 br2 ba bw1 ph3 pv2 mb2 dib black bg-white">Publish</button>
+                </form>
+              </note-editor>
+            </route>
+            <route id="viewer">
+              <note-viewer>
+                <header>
+                  <a target="_blank"> See on gateway</a>
+                  <h2>Note title</h2>
+                </header><a></a>
+                <iframe src=""></iframe>
+              </note-viewer>
+            </route>
+          </view-router>
         </notes-dashboard>
       </route>
       <route id="note-detail">

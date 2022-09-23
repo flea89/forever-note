@@ -6,6 +6,7 @@ import {
 import { loadDefaultIdentity } from "@w3ui/wallet-core";
 import { Authority } from "@ucanto/authority";
 import { SUBMIT_NOTE_EVENT } from "./note-editor";
+import { EVENTS } from "./note-list";
 
 const STORE_API_URL = new URL(
   "https://8609r1772a.execute-api.us-east-1.amazonaws.com"
@@ -16,12 +17,22 @@ const STORE_DID = Authority.parse(
 
 const EDITOR_SELECTOR = "note-editor";
 const LIST_SELECTOR = "note-list";
+const ROUTER_SELECTOR = "view-router";
+const VIEWER_SELECTOR = "note-viewer";
+const NEWNOTE_SELECTOR = ".add-new-note";
 
 export class Dashboard extends HTMLElement {
   constructor() {
     super();
-    this.editor = document.querySelector(EDITOR_SELECTOR);
-    this.list = document.querySelector(LIST_SELECTOR);
+    this.setEditor = this.setEditor.bind(this);
+    this.setViewer = this.setViewer.bind(this);
+    this.noteSubmittedHandler = this.noteSubmittedHandler.bind(this);
+
+    this.editor = this.querySelector(EDITOR_SELECTOR);
+    this.list = this.querySelector(LIST_SELECTOR);
+    this.router = this.querySelector(ROUTER_SELECTOR);
+    this.viewer = this.querySelector(VIEWER_SELECTOR);
+    this.newNote = this.querySelector(NEWNOTE_SELECTOR);
     const savedNotes = localStorage.getItem("notesCids");
     this.notes = [];
 
@@ -56,28 +67,45 @@ export class Dashboard extends HTMLElement {
   }
 
   async hideSpinner() {
-    const spinner = document.querySelector("div.spinner")
+    const spinner = document.querySelector("div.spinner");
     if (spinner) {
       spinner.remove();
     }
   }
 
-  async connectedCallback() {
-    this.updateList();
-    this.editor?.addEventListener(SUBMIT_NOTE_EVENT, async (e) => {
-      const { bytes, cid, title } = e.detail;
-      try {
-        this.showSpinner();
-        await this.uploadFile(bytes);
-        await this.saveNote(cid, title);
-        this.updateList();
-        this.hideSpinner();
-      } catch (e) {
-        alert("Ops something go wrong");
-        console.error(e);
-      }
-    });
+  setViewer(e) {
+    const { note } = e.detail;
+    this.viewer?.setAttribute("note", JSON.stringify(note));
+    this.router?.setAttribute("current-route", "viewer");
   }
 
-  disconnectedCallback() {}
+  setEditor(note) {
+    this.router?.setAttribute("current-route", "editor");
+  }
+
+  async noteSubmittedHandler(e) {
+    const { bytes, cid, title } = e.detail;
+    try {
+      this.showSpinner();
+      await this.uploadFile(bytes);
+      await this.saveNote(cid, title);
+      this.updateList();
+      this.hideSpinner();
+    } catch (e) {
+      alert("Ops something go wrong");
+      console.error(e);
+    }
+  }
+
+  async connectedCallback() {
+    this.updateList();
+
+    this.editor?.addEventListener(SUBMIT_NOTE_EVENT, this.noteSubmittedHandler);
+    this.list?.addEventListener(EVENTS.noteSelected, this.setViewer);
+    this.newNote?.addEventListener("click", this.setEditor);
+  }
+
+  disconnectedCallback() {
+    this.newNote?.removeEventListener("click", this.setEditor);
+  }
 }
