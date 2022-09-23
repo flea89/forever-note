@@ -46,14 +46,32 @@ export class Dashboard extends HTMLElement {
     this.list?.setAttribute("items", JSON.stringify(this.notes));
   }
 
+  async showSpinner() {
+    const spinner = document.createElement("div");
+    const loader = document.createElement("span");
+    spinner.className = "spinner";
+    loader.className = "loader";
+    spinner.appendChild(loader);
+    document.body.appendChild(spinner);
+  }
+
+  async hideSpinner() {
+    const spinner = document.querySelector("div.spinner")
+    if (spinner) {
+      spinner.remove();
+    }
+  }
+
   async connectedCallback() {
     this.updateList();
     this.editor?.addEventListener(SUBMIT_NOTE_EVENT, async (e) => {
       const { bytes, cid, title } = e.detail;
       try {
+        this.showSpinner();
         await this.uploadFile(bytes);
         await this.saveNote(cid, title);
         this.updateList();
+        this.hideSpinner();
       } catch (e) {
         alert("Ops something go wrong");
         console.error(e);

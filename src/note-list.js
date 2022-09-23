@@ -12,13 +12,17 @@ export class NoteList extends HTMLElement {
   renderNotes(notes) {
     this.innerHTML = "";
     notes.forEach(({ cid, title }) => {
+      const list = document.createElement("ul");
       const item = document.createElement("li");
       const link = document.createElement("a");
+      list.className = "list pl0 measure";
+      item.className = "lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--black-30";
       link.target = "_blank";
       link.href = `https://w3s.link/ipfs/${cid}`;
       link.textContent = title;
       item.appendChild(link);
-      this.appendChild(item);
+      list.appendChild(item);
+      this.appendChild(list);
     });
   }
 
