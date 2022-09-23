@@ -14,6 +14,8 @@
   "author": "Paolo Chillari",
   "license": "ISC",
   "dependencies": {
+    "@w3ui/uploader-core": "^1.1.1",
+    "@w3ui/wallet-core": "^1.2.2",
     "@web3-storage/access": "0.2.0"
   },
   "devDependencies": {

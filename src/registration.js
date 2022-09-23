@@ -1,4 +1,4 @@
-import { registerIdentity } from "@w3ui/wallet-core";
+import { createIdentity, registerIdentity, sendVerificationEmail, waitIdentityVerification } from "@w3ui/wallet-core";
 
 const SELECTORS = {
   authForm: ".auth__form",
@@ -43,6 +43,7 @@ export class RegisterForm extends HTMLElement {
     let status;
     let error;
     let identity;
+    let proof;
 
     if (email) {
       const event = new CustomEvent(EVENTS.registrationStart, {
@@ -50,9 +51,16 @@ export class RegisterForm extends HTMLElement {
       });
       this.dispatchEvent(event);
 
+      const unverifiedIdentity = await createIdentity({ email })
+      console.log(`DID: ${unverifiedIdentity.signingPrincipal.did()}`)
+      await sendVerificationEmail(unverifiedIdentity)
+      const controller = new AbortController()
+
       try {
         this.toggleConfirmation(true);
-        identity = await registerIdentity(email);
+        ({ identity, proof } = await waitIdentityVerification(unverifiedIdentity, {
+          signal: controller.signal
+        }));
         status = "success";
       } catch (err) {
         status = "error";

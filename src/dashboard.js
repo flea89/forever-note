@@ -39,7 +39,7 @@ export class Dashboard extends HTMLElement {
 
   async uploadFile(bytes) {
     const identity = await loadDefaultIdentity();
-    await uploadCarBytes(identity.signingAuthority, bytes);
+    await uploadCarBytes(identity.signingPrincipal, bytes);
   }
 
   async updateList() {
@@ -56,6 +56,7 @@ export class Dashboard extends HTMLElement {
         this.updateList();
       } catch (e) {
         alert("Ops something go wrong");
+        console.error(e);
       }
     });
   }

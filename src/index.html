@@ -5,10 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A W3up demo</title>
-    <link rel="stylesheet" href="./styles/main.scss" />
+    <link rel="stylesheet" href="./styles/main.scss"/>
+    <link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css"/>
     <script type="module" src="./index.js"></script>
 </head>
-<body>
+<body class="sans-serif">
   <notes-app>
     <app-router current-route="loading">
       <route id="registration">
@@ -34,16 +35,18 @@
         </register-form>
       </route>
       <route id="dashboard">
-        <notes-dashboard>
-          <h2>A dashboard</h2>
-          <h3>My files</h3>
-          <note-editor>
-            <form class="note-editor__form" action="">
-              <textarea rows="10" cols="80">Hello</textarea>
-              <button type="submit">Publish</button>
+        <notes-dashboard class="flex">
+          <div class="w-third ba pa3 h-100 min-vh-100">
+            <h3 class="mt0">My notes</h3>
+            <hr/>
+            <note-list></note-list>
+          </div>
+          <note-editor class="w-two-thirds pa3 flex flex-column">
+            <form class="note-editor__form flex flex-column min-vh-100" action="">
+              <textarea rows="10" cols="80" class="h-100">Hello</textarea>
+              <button type="submit" class="pointer mv4 dim f6 br2 ba bw1 ph3 pv2 mb2 dib black bg-white">Publish</button>
             </form>
           </note-editor>
-          <note-list></note-list>
         </notes-dashboard>
       </route>
       <route id="note-detail">
