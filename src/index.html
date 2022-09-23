@@ -13,26 +13,35 @@
   <notes-app class="pa4 ph5-ns">
     <view-router current-route="loading">
       <route id="registration">
-        <h1>
-          Forever Note!
-        </h1>
-        <p>
-          An interplanetary note taking app.
-        </p>
-        <p>
-          Powered by w3up.
-        </p>
-        <register-form>
-          <form class="auth__form" action="">
-              <label> Email: <input name="email" required type="email"></label>
-              <div>
-                  <button type="submit"> Sign in</button>
-              </div>
-            </form>
-            <div class="auth__confirmation" hidden>
-              Check your email to complete the registration.
+        <div class="flex justify-center">
+          <div>
+            <div class="f6 lh-copy">
+              <h1>
+                Forever Note!
+              </h1>
+              <p>
+                An interplanetary note taking app.
+              </p>
+              <p>
+                Powered by w3up.
+              </p>
             </div>
-        </register-form>
+            <register-form>
+              <form class="auth__form" action="" class="mw7 center pa4 br2-ns ba b--black-10">
+                <fieldset class="cf bn ma0 pa0">
+                  <label class="db fw4 lh-copy f6" for="email">Email:</label>
+                  <input class="pa2 input-reset ba w-100 measure" name="email" id="email" required type="email"></input>
+                  <div class="mt3">
+                      <button type="submit" class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6"> Sign in</button>
+                  </div>
+                </fieldset>
+              </form>
+              <div class="auth__confirmation" hidden>
+                Check your email to complete the registration.
+              </div>
+            </register-form>
+          </div>
+        </div>
       </route>
       <route id="dashboard">
         <notes-dashboard class="flex pa5">

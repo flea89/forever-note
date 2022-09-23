@@ -40,6 +40,22 @@ export class RegisterForm extends HTMLElement {
     this.form$?.removeEventListener("submit", this.submitHandler);
   }
 
+  async showSpinner() {
+    const spinner = document.createElement("div");
+    const loader = document.createElement("span");
+    spinner.className = "spinner";
+    loader.className = "loader";
+    spinner.appendChild(loader);
+    document.body.appendChild(spinner);
+  }
+
+  async hideSpinner() {
+    const spinner = document.querySelector("div.spinner");
+    if (spinner) {
+      spinner.remove();
+    }
+  }
+
   submitHandler = async (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
@@ -63,6 +79,7 @@ export class RegisterForm extends HTMLElement {
 
       try {
         this.toggleConfirmation(true);
+        this.showSpinner();
         ({ identity, proof } = await waitIdentityVerification(
           unverifiedIdentity,
           {
@@ -76,6 +93,7 @@ export class RegisterForm extends HTMLElement {
         console.error("Registraton failed:", err);
       } finally {
         this.toggleConfirmation(false);
+        this.hideSpinner();
         const event = new CustomEvent(EVENTS.registrationSuccess, {
           detail: { identity, error },
         });
