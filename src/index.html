@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css"/>
     <script type="module" src="./index.js"></script>
 </head>
-<body class="sans-serif">
-  <notes-app>
+<body class="sans-serif bg-yellow">
+  <notes-app class="pa4 ph5-ns">
     <view-router current-route="loading">
       <route id="registration">
         <h1>
@@ -35,31 +35,41 @@
         </register-form>
       </route>
       <route id="dashboard">
-        <notes-dashboard class="flex">
+        <notes-dashboard class="flex pa5">
           <div class="w-third br pa3 h-100 min-vh-100">
-            <h3 class="mt0">My notes</h3> <span><a href="#" class="add-new-note"> New note </a></span>
-            <hr/>
-            <note-list></note-list>
+            <div class="bb flex justify-between items-baseline ">
+              <h2 class="mt0">My notes</h3> <span><a href="#" class="add-new-note"> New note </a></span>
+            </div>
+            <note-list>
+              <ul class="list pl0 measure">
+
+              </ul>
+            </note-list>
           </div>
-          <view-router current-route="editor">
-            <route id="editor">
-              <note-editor class="w-two-thirds mh3 flex flex-column">
-                <form class="note-editor__form flex flex-column min-vh-100" action="">
-                  <textarea rows="10" cols="80" class="h-100">Hello</textarea>
-                  <button type="submit" class="pointer mv4 dim f6 br2 ba bw1 ph3 pv2 mb2 dib black bg-white">Publish</button>
-                </form>
-              </note-editor>
-            </route>
-            <route id="viewer">
-              <note-viewer>
-                <header>
-                  <a target="_blank"> See on gateway</a>
-                  <h2>Note title</h2>
-                </header><a></a>
-                <iframe src=""></iframe>
-              </note-viewer>
-            </route>
-          </view-router>
+          <div class="pa3 w-two-thirds mh3 flex">
+            <view-router current-route="editor" class="db w-100">
+              <route id="editor">
+                <note-editor class="min-vh-100 db flex-column">
+                  <header class="flex justify-between items-baseline content-end">
+                    <h2 class="mt0">A new note</h2>
+                  </header>
+                  <form class="note-editor__form flex flex-column" action="">
+                    <textarea rows="10" cols="80" class="h-100 pa2">Hello</textarea>
+                    <button type="submit" class="pointer mv4 dim f6 br2 ba bw1 ph3 pv2 mb2 dib black bg-white">Publish</button>
+                  </form>
+                </note-editor>
+              </route>
+              <route id="viewer">
+                <note-viewer>
+                  <header class="flex justify-between items-baseline content-end">
+                    <a target="_blank"> See on gateway</a>
+                    <h2>Note title</h2>
+                  </header>
+                  <iframe class="flex  bg-white flex-column w-100" src=""></iframe>
+                </note-viewer>
+              </route>
+            </view-router>
+          </div>
         </notes-dashboard>
       </route>
       <route id="note-detail">

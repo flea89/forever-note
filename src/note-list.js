@@ -16,17 +16,16 @@ export class NoteList extends HTMLElement {
 
   constructor() {
     super();
+    this.list$ = this.querySelector("ul");
   }
 
   renderNotes(notes) {
-    this.innerHTML = "";
+    this.list$.innerHTML = "";
     notes.forEach((note) => {
       const { cid, title } = note;
-      const list = document.createElement("ul");
       const item = document.createElement("li");
       const link = document.createElement("a");
 
-      list.className = "list pl0 measure";
       item.className = "lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--black-30";
 
       link.href = `#`;
@@ -41,7 +40,7 @@ export class NoteList extends HTMLElement {
         this.dispatchEvent(event);
       });
 
-      this.appendChild(item);
+      this.list$.appendChild(item);
     });
   }
 
