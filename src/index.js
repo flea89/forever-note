@@ -4,6 +4,7 @@ import { Router } from "./router";
 import { NoteEditor } from "./note-editor";
 import { NoteList } from "./note-list";
 import { Dashboard } from "./dashboard";
+import { NoteViewer } from "./note-viewer";
 
 const SELECTOR = {
   authView: "#auth",
@@ -38,11 +39,12 @@ console.log("Hello world");
 // hydrateAuth(authView$, client, loginStatusChangeHandler);
 
 customElements.define("register-form", RegisterForm);
-customElements.define("app-router", Router);
+customElements.define("view-router", Router);
 customElements.define("notes-app", App);
 customElements.define("notes-dashboard", Dashboard);
 customElements.define("note-editor", NoteEditor);
 customElements.define("note-list", NoteList);
+customElements.define("note-viewer", NoteViewer);
 
 // document
 //   .querySelector("register-form")

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "vite build src/",
     "start": "vite src/"
   },
   "keywords": [
@@ -14,9 +15,12 @@
   "author": "Paolo Chillari",
   "license": "ISC",
   "dependencies": {
+    "@w3ui/uploader-core": "^1.1.1",
+    "@w3ui/wallet-core": "^1.2.2",
     "@web3-storage/access": "0.2.0"
   },
   "devDependencies": {
+    "sass": "^1.55.0",
     "vite": "^3.1.3"
   }
 }

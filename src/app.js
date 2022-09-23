@@ -16,7 +16,7 @@ export class App extends HTMLElement {
      */
     this.identity;
     this.registration$ = this.querySelector("register-form");
-    this.router$ = this.querySelector("app-router");
+    this.router$ = this.querySelector("view-router");
 
     if (!this.registration$ || !this.router$) {
       throw new Error("Missing components!");

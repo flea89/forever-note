@@ -10,7 +10,7 @@ export class Router extends HTMLElement {
     super();
     this.routes = {};
 
-    [...this.querySelectorAll("route")].forEach((e) => {
+    [...this.querySelectorAll(":scope > route")].forEach((e) => {
       if (e.id === undefined) {
         throw new Error("Route should have an id");
       }
