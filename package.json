@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "vite build src/",
-    "start": "vite src/"
+    "build": "vite build",
+    "start": "vite"
   },
   "keywords": [
     "w3up",
