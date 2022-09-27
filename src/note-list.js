@@ -23,24 +23,8 @@ export class NoteList extends HTMLElement {
     this.list$.innerHTML = "";
     notes.forEach((note) => {
       const { cid, title } = note;
-      const item = document.createElement("li");
-      const link = document.createElement("a");
-
-      item.className = "lh-copy pv3 ba bl-0 bt-0 br-0 b--dotted b--black-30";
-
-      link.href = `#`;
-      link.textContent = title;
-      item.appendChild(link);
-
-      item.addEventListener("click", (e) => {
-        e.preventDefault();
-        const event = new CustomEvent(EVENTS.noteSelected, {
-          detail: { note },
-        });
-        this.dispatchEvent(event);
-      });
-
-      this.list$.appendChild(item);
+      const item$ = new NoteListItem(cid, title)
+      this.list$.appendChild(item$);
     });
   }
 
@@ -49,5 +33,33 @@ export class NoteList extends HTMLElement {
       const notes = newValue ? JSON.parse(newValue) : [];
       this.renderNotes(notes);
     }
+  }
+}
+
+export class NoteListItem extends HTMLElement {
+  constructor(cid="", title="") {
+    super();
+    this.cid = cid
+    this.title = title
+  }
+
+  connectedCallback() {
+    const template = document.getElementById('note-list-item');
+    const templateContent = template.content;
+    const node = templateContent.cloneNode(true);
+    const titleSlot = node.querySelector("slot[name=note-list-item-title]");
+
+    titleSlot.innerHTML = this.title
+
+    this.addEventListener("click", (e) => {
+      e.preventDefault();
+      const event = new CustomEvent(EVENTS.noteSelected, {
+        detail: {note: {cid: this.cid, title: this.title}},
+        bubbles: true
+      });
+      this.dispatchEvent(event);
+    });
+
+    this.appendChild(node);
   }
 }
