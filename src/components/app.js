@@ -38,5 +38,7 @@ export class App extends HTMLElement {
     });
   }
 
-  connectedCallback() {}
+  async connectedCallback() {
+  }
 }
+

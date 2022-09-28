@@ -1,10 +1,10 @@
-import { App } from "./app";
-import { RegisterForm } from "./registration";
+import { App } from "./components/app";
+import { Dashboard } from "./components/dashboard";
+import { NoteEditor } from "./components/note-editor";
+import { NoteList, NoteListItem } from "./components/note-list";
+import { NoteViewer } from "./components/note-viewer";
+import { RegisterForm } from "./components/registration";
 import { Router } from "./router";
-import { NoteEditor } from "./note-editor";
-import { NoteList, NoteListItem } from "./note-list";
-import { Dashboard } from "./dashboard";
-import { NoteViewer } from "./note-viewer";
 
 customElements.define("register-form", RegisterForm);
 customElements.define("view-router", Router);

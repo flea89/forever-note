@@ -1,6 +1,6 @@
 const ROUTE_ATTRIBUTE = "current-route";
 
-// naive implementation of a router, that show and hide routes base on an attribute
+// naive implementation of a router, that show and hide routes based on an attribute
 export class Router extends HTMLElement {
   static get observedAttributes() {
     return [ROUTE_ATTRIBUTE];
@@ -36,3 +36,4 @@ export class Router extends HTMLElement {
     });
   }
 }
+

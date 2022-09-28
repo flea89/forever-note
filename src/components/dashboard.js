@@ -20,6 +20,7 @@ const LIST_SELECTOR = "note-list";
 const ROUTER_SELECTOR = "view-router";
 const VIEWER_SELECTOR = "note-viewer";
 const NEWNOTE_SELECTOR = ".add-new-note";
+const PUBLISH_SELECTOR = ".note-editor__form button[type=submit]"
 
 export class Dashboard extends HTMLElement {
   constructor() {
@@ -54,7 +55,7 @@ export class Dashboard extends HTMLElement {
   }
 
   async updateList() {
-    this.list?.setAttribute("items", JSON.stringify(this.notes));
+    this.list?.setAttribute("items", JSON.stringify(this.notes.reverse()));
   }
 
   async showSpinner() {
@@ -74,6 +75,7 @@ export class Dashboard extends HTMLElement {
   }
 
   setViewer(e) {
+    debugger;
     const { note } = e.detail;
     this.viewer?.setAttribute("note", JSON.stringify(note));
     this.router?.setAttribute("current-route", "viewer");
@@ -87,19 +89,23 @@ export class Dashboard extends HTMLElement {
     const { bytes, cid, title } = e.detail;
     try {
       this.showSpinner();
+      this.querySelector(PUBLISH_SELECTOR).setAttribute("disabled", "");
       await this.uploadFile(bytes);
       await this.saveNote(cid, title);
       this.updateList();
       this.hideSpinner();
+      this.querySelector(PUBLISH_SELECTOR).removeAttribute("disabled");
+      this.setViewer({
+        detail: {note: {cid: cid.toString(), title}},
+      })
     } catch (e) {
-      alert("Ops something go wrong");
+      alert("Ops something went wrong");
       console.error(e);
     }
   }
 
   async connectedCallback() {
     this.updateList();
-
     this.editor?.addEventListener(SUBMIT_NOTE_EVENT, this.noteSubmittedHandler);
     this.list?.addEventListener(EVENTS.noteSelected, this.setViewer);
     this.newNote?.addEventListener("click", this.setEditor);
@@ -109,3 +115,4 @@ export class Dashboard extends HTMLElement {
     this.newNote?.removeEventListener("click", this.setEditor);
   }
 }
+
