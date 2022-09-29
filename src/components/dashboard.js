@@ -1,27 +1,23 @@
-import {
-  encodeFile,
-  encodeDirectory,
-  uploadCarBytes,
-} from "@w3ui/uploader-core";
+import { uploadCarBytes } from "@w3ui/uploader-core";
 import { loadDefaultIdentity } from "@w3ui/wallet-core";
-import { Authority } from "@ucanto/authority";
 import { SUBMIT_NOTE_EVENT } from "./note-editor";
 import { EVENTS } from "./note-list";
 
-const STORE_API_URL = new URL(
-  "https://8609r1772a.execute-api.us-east-1.amazonaws.com"
-);
-const STORE_DID = Authority.parse(
-  "did:key:z6MkrZ1r5XBFZjBU34qyD8fueMbMRkKw17BZaq2ivKFjnz2z"
-);
+const SELECTORS = {
+  editor: "note-editor",
+  list: "note-list",
+  router: "view-router",
+  viewer: "note-viewer",
+  newNote: ".add-new-note",
+  publish: ".note-editor__form button[type=submit]",
+};
 
-const EDITOR_SELECTOR = "note-editor";
-const LIST_SELECTOR = "note-list";
-const ROUTER_SELECTOR = "view-router";
-const VIEWER_SELECTOR = "note-viewer";
-const NEWNOTE_SELECTOR = ".add-new-note";
-const PUBLISH_SELECTOR = ".note-editor__form button[type=submit]"
+const LOCAL_STORAGE_KEY = "__notes_cids";
 
+/**
+ * This a container that is in charge of orchestratign the state for the dashboard.
+ * It also deals with routing the notes editor and viewer.
+ */
 export class Dashboard extends HTMLElement {
   constructor() {
     super();
@@ -29,12 +25,14 @@ export class Dashboard extends HTMLElement {
     this.setViewer = this.setViewer.bind(this);
     this.noteSubmittedHandler = this.noteSubmittedHandler.bind(this);
 
-    this.editor = this.querySelector(EDITOR_SELECTOR);
-    this.list = this.querySelector(LIST_SELECTOR);
-    this.router = this.querySelector(ROUTER_SELECTOR);
-    this.viewer = this.querySelector(VIEWER_SELECTOR);
-    this.newNote = this.querySelector(NEWNOTE_SELECTOR);
-    const savedNotes = localStorage.getItem("notesCids");
+    this.editor$ = this.querySelector(SELECTORS.editor);
+    this.list$ = this.querySelector(SELECTORS.list);
+    this.router$ = this.querySelector(SELECTORS.router);
+    this.viewer$ = this.querySelector(SELECTORS.viewer);
+    this.newNote$ = this.querySelector(SELECTORS.newNote);
+    this.publishBtn$ = this.querySelector(SELECTORS.publish);
+
+    const savedNotes = localStorage.getItem(LOCAL_STORAGE_KEY);
     this.notes = [];
 
     try {
@@ -44,18 +42,31 @@ export class Dashboard extends HTMLElement {
     }
   }
 
+  /**
+   * It saves a note in the application state.
+   *
+   * @param {string} cid
+   * @param {string} title
+   */
   async saveNote(cid, title) {
     this.notes.push({ cid: cid.toString(), title });
-    localStorage.setItem("notesCids", JSON.stringify(this.notes));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.notes));
   }
 
+  /**
+   * It uploads the provided content to web3.storage.
+   * @param {Uint8Array} bytes
+   */
   async uploadFile(bytes) {
     const identity = await loadDefaultIdentity();
+    if (!identity) {
+      throw Error("Trying to upload but identity is missing");
+    }
     await uploadCarBytes(identity.signingPrincipal, bytes);
   }
 
   async updateList() {
-    this.list?.setAttribute("items", JSON.stringify(this.notes.reverse()));
+    this.list$?.setAttribute("items", JSON.stringify(this.notes.reverse()));
   }
 
   async showSpinner() {
@@ -77,27 +88,27 @@ export class Dashboard extends HTMLElement {
   setViewer(e) {
     debugger;
     const { note } = e.detail;
-    this.viewer?.setAttribute("note", JSON.stringify(note));
-    this.router?.setAttribute("current-route", "viewer");
+    this.viewer$?.setAttribute("note", JSON.stringify(note));
+    this.router$?.setAttribute("current-route", "viewer");
   }
 
   setEditor(note) {
-    this.router?.setAttribute("current-route", "editor");
+    this.router$?.setAttribute("current-route", "editor");
   }
 
   async noteSubmittedHandler(e) {
     const { bytes, cid, title } = e.detail;
     try {
       this.showSpinner();
-      this.querySelector(PUBLISH_SELECTOR).setAttribute("disabled", "");
+      this.publishBtn$?.setAttribute("disabled", "");
       await this.uploadFile(bytes);
       await this.saveNote(cid, title);
       this.updateList();
       this.hideSpinner();
-      this.querySelector(PUBLISH_SELECTOR).removeAttribute("disabled");
+      this.publishBtn$?.removeAttribute("disabled");
       this.setViewer({
-        detail: {note: {cid: cid.toString(), title}},
-      })
+        detail: { note: { cid: cid.toString(), title } },
+      });
     } catch (e) {
       alert("Ops something went wrong");
       console.error(e);
@@ -106,13 +117,16 @@ export class Dashboard extends HTMLElement {
 
   async connectedCallback() {
     this.updateList();
-    this.editor?.addEventListener(SUBMIT_NOTE_EVENT, this.noteSubmittedHandler);
-    this.list?.addEventListener(EVENTS.noteSelected, this.setViewer);
-    this.newNote?.addEventListener("click", this.setEditor);
+
+    this.editor$?.addEventListener(
+      SUBMIT_NOTE_EVENT,
+      this.noteSubmittedHandler
+    );
+    this.list$?.addEventListener(EVENTS.noteSelected, this.setViewer);
+    this.newNote$?.addEventListener("click", this.setEditor);
   }
 
   disconnectedCallback() {
-    this.newNote?.removeEventListener("click", this.setEditor);
+    this.newNote$?.removeEventListener("click", this.setEditor);
   }
 }
-
