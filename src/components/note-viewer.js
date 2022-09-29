@@ -22,8 +22,17 @@ export class NoteViewer extends HTMLElement {
   }
 
   setNote(note) {
+    this.iframe$.srcdoc = "<!DOCTYPE html><p>Waiting for Gateaway....</p>";
     const src = `https://w3s.link/ipfs/${note.cid}`;
     this.iframe$.src = src;
+    this.iframe$.addEventListener(
+      "load",
+      () => {
+        this.iframe$.removeAttribute("srcdoc");
+      },
+      { once: true }
+    );
+
     this.link$?.setAttribute("href", src);
     this.title$.textContent = note.title;
   }
