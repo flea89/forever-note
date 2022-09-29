@@ -1,4 +1,5 @@
 import { uploadCarBytes } from "@w3ui/uploader-core";
+import { listUploads } from "@w3ui/uploads-list-core";
 import { loadDefaultIdentity } from "@w3ui/wallet-core";
 import { SUBMIT_NOTE_EVENT } from "./note-editor";
 import { EVENTS } from "./note-list";
@@ -32,25 +33,7 @@ export class Dashboard extends HTMLElement {
     this.newNote$ = this.querySelector(SELECTORS.newNote);
     this.publishBtn$ = this.querySelector(SELECTORS.publish);
 
-    const savedNotes = localStorage.getItem(LOCAL_STORAGE_KEY);
-    this.notes = [];
-
-    try {
-      this.notes = savedNotes ? JSON.parse(savedNotes) : [];
-    } catch (e) {
-      console.error("Notes state is broken");
-    }
-  }
-
-  /**
-   * It saves a note in the application state.
-   *
-   * @param {string} cid
-   * @param {string} title
-   */
-  async saveNote(cid, title) {
-    this.notes.push({ cid: cid.toString(), title });
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.notes));
+    this.notes = []; // null => not loaded yet
   }
 
   /**
@@ -58,15 +41,14 @@ export class Dashboard extends HTMLElement {
    * @param {Uint8Array} bytes
    */
   async uploadFile(bytes) {
-    const identity = await loadDefaultIdentity();
-    if (!identity) {
-      throw Error("Trying to upload but identity is missing");
-    }
-    await uploadCarBytes(identity.signingPrincipal, bytes);
+    await uploadCarBytes(this.identity.signingPrincipal, bytes);
   }
 
   async updateList() {
-    this.list$?.setAttribute("items", JSON.stringify(this.notes.reverse()));
+    await this.updateNotes();
+    if (this.notes) {
+      this.list$?.setAttribute("items", JSON.stringify(this.notes));
+    }
   }
 
   async showSpinner() {
@@ -86,7 +68,6 @@ export class Dashboard extends HTMLElement {
   }
 
   setViewer(e) {
-    debugger;
     const { note } = e.detail;
     this.viewer$?.setAttribute("note", JSON.stringify(note));
     this.router$?.setAttribute("current-route", "viewer");
@@ -102,8 +83,15 @@ export class Dashboard extends HTMLElement {
       this.showSpinner();
       this.publishBtn$?.setAttribute("disabled", "");
       await this.uploadFile(bytes);
-      await this.saveNote(cid, title);
-      this.updateList();
+      // calling store/list straight after an upload doesn't always return the updated list….
+      // It seems an eventual consistency type of issue.
+      // This isn't obviously a nice solution, but a quick workaround for now
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // We shouldn't really by hitting the endpoint everytime, we should keep the state locally.
+      // Why are we doing it than:
+      // - We use the creation date as note title, given no metadata can be uploaded at the time of writing.
+      await this.updateList();
       this.hideSpinner();
       this.publishBtn$?.removeAttribute("disabled");
       this.setViewer({
@@ -116,14 +104,27 @@ export class Dashboard extends HTMLElement {
   }
 
   async connectedCallback() {
-    this.updateList();
-
     this.editor$?.addEventListener(
       SUBMIT_NOTE_EVENT,
       this.noteSubmittedHandler
     );
     this.list$?.addEventListener(EVENTS.noteSelected, this.setViewer);
     this.newNote$?.addEventListener("click", this.setEditor);
+
+    this.identity = await loadDefaultIdentity();
+    if (!this.identity) {
+      throw Error("Trying to upload but identity is missing");
+    }
+    this.updateList();
+  }
+
+  async updateNotes() {
+    this.notes = (
+      await listUploads(this.identity.signingPrincipal)
+    ).results.map((u) => ({
+      cid: u.dataCid,
+      title: new Date(u.uploadedAt).toLocaleString(),
+    }));
   }
 
   disconnectedCallback() {
